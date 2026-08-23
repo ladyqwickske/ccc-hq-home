@@ -24,16 +24,12 @@
     --sapphire: #3f6fd6;
     --ink: #e9e6da;
     --ink-dim: #a8a692;
-
     --display: 'Cinzel', serif;
     --body: 'Spectral', serif;
     --utility: 'Oswald', sans-serif;
   }
-
   * { box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
   body {
     margin: 0;
     background: var(--void);
@@ -42,9 +38,7 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-
   a { color: inherit; }
-
   /* ---------- ambient background ---------- */
   .stars {
     position: fixed;
@@ -60,7 +54,6 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
   }
-
   /* ---------- nav ---------- */
   header {
     position: sticky;
@@ -74,28 +67,24 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(212,175,55,0.15);
   }
-
   .brand {
     display: flex;
     align-items: center;
     gap: 12px;
     text-decoration: none;
   }
-
   .brand img {
     height: 38px;
     width: 38px;
     object-fit: contain;
     filter: drop-shadow(0 0 6px rgba(212,175,55,0.35));
   }
-
   .brand-word {
     font-family: var(--utility);
     letter-spacing: 0.14em;
     font-size: 0.85rem;
     color: var(--gold-bright);
   }
-
   nav.links {
     display: flex;
     gap: clamp(16px, 3vw, 34px);
@@ -104,7 +93,6 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-
   nav.links a {
     text-decoration: none;
     color: var(--ink-dim);
@@ -112,13 +100,28 @@
     border-bottom: 1px solid transparent;
     transition: color 0.25s ease, border-color 0.25s ease;
   }
-
   nav.links a:hover,
   nav.links a:focus-visible {
     color: var(--gold-bright);
     border-color: var(--gold);
   }
-
+  nav.links a.tools-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--emerald-bright);
+  }
+  nav.links a.tools-link:hover,
+  nav.links a.tools-link:focus-visible {
+    color: var(--gold-bright);
+    border-color: var(--gold);
+  }
+  nav.links a.tools-link img {
+    height: 22px;
+    width: 22px;
+    object-fit: contain;
+    border-radius: 50%;
+  }
   /* ---------- hero ---------- */
   .hero {
     position: relative;
@@ -131,30 +134,25 @@
     text-align: center;
     padding: 80px 20px 60px;
   }
-
   .crest-wrap {
     position: relative;
     width: clamp(150px, 22vw, 230px);
     margin-bottom: 28px;
   }
-
   .crest-wrap img {
     width: 100%;
     display: block;
     filter: drop-shadow(0 0 26px rgba(212,175,55,0.28));
   }
-
   @media (prefers-reduced-motion: no-preference) {
     .crest-wrap {
       animation: float 7s ease-in-out infinite;
     }
   }
-
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
-
   .eyebrow {
     font-family: var(--utility);
     letter-spacing: 0.3em;
@@ -163,7 +161,6 @@
     color: var(--emerald-bright);
     margin: 0 0 18px;
   }
-
   .eyebrow::before,
   .eyebrow::after {
     content: '✦';
@@ -171,7 +168,6 @@
     margin: 0 12px;
     font-size: 0.7rem;
   }
-
   h1.wordmark {
     font-family: var(--display);
     font-weight: 800;
@@ -184,7 +180,6 @@
     color: transparent;
     text-shadow: 0 0 60px rgba(212,175,55,0.15);
   }
-
   .family-ribbon {
     display: inline-block;
     margin-top: 18px;
@@ -197,7 +192,6 @@
     background: linear-gradient(180deg, var(--gold-bright), var(--gold));
     clip-path: polygon(4% 0%, 96% 0%, 100% 50%, 96% 100%, 4% 100%, 0% 50%);
   }
-
   .tagline {
     max-width: 44ch;
     margin: 34px auto 0;
@@ -205,7 +199,6 @@
     font-style: italic;
     color: var(--ink-dim);
   }
-
   .scroll-cue {
     margin-top: 56px;
     font-family: var(--utility);
@@ -214,7 +207,6 @@
     text-transform: uppercase;
     color: var(--gold-dim);
   }
-
   /* ---------- clans section ---------- */
   .clans {
     position: relative;
@@ -223,12 +215,10 @@
     max-width: 1180px;
     margin: 0 auto;
   }
-
   .section-head {
     text-align: center;
     margin-bottom: 64px;
   }
-
   .section-head h2 {
     font-family: var(--display);
     font-weight: 700;
@@ -236,24 +226,20 @@
     color: var(--ink);
     margin: 10px 0 16px;
   }
-
   .section-head p {
     max-width: 56ch;
     margin: 0 auto;
     color: var(--ink-dim);
     font-size: 1.05rem;
   }
-
   .clan-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 30px;
   }
-
   @media (max-width: 900px) {
     .clan-grid { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
   }
-
   .clan-card {
     position: relative;
     background: linear-gradient(180deg, var(--panel) 0%, #080a15 100%);
@@ -268,16 +254,13 @@
     transform: translateY(24px);
     transition: opacity 0.7s ease, transform 0.7s ease, border-color 0.3s ease;
   }
-
   .clan-card.in-view {
     opacity: 1;
     transform: translateY(0);
   }
-
   .clan-card:hover {
     border-color: rgba(212,175,55,0.4);
   }
-
   .clan-card::before {
     content: '';
     position: absolute;
@@ -286,7 +269,6 @@
     width: 46px; height: 3px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
-
   .tier-badge {
     font-family: var(--utility);
     font-size: 0.72rem;
@@ -298,7 +280,6 @@
     border-radius: 2px;
     margin-bottom: 20px;
   }
-
   .clan-card h3 {
     font-family: var(--display);
     font-size: 1.6rem;
@@ -306,7 +287,6 @@
     color: var(--gold-bright);
     margin: 0 0 6px;
   }
-
   .clan-card .clan-sub {
     font-family: var(--utility);
     font-size: 0.7rem;
@@ -315,13 +295,11 @@
     color: var(--emerald-bright);
     margin-bottom: 22px;
   }
-
   .clan-card p {
     color: var(--ink-dim);
     font-size: 0.98rem;
     margin: 0 0 26px;
   }
-
   .clan-card .cta {
     margin-top: auto;
     font-family: var(--utility);
@@ -335,13 +313,11 @@
     border-radius: 2px;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
-
   .clan-card .cta:hover,
   .clan-card .cta:focus-visible {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(212,175,55,0.25);
   }
-
   .clan-card .placeholder {
     margin-top: auto;
     font-family: var(--utility);
@@ -351,7 +327,6 @@
     color: var(--ink-dim);
     opacity: 0.6;
   }
-
   /* ---------- footer ---------- */
   footer {
     position: relative;
@@ -360,7 +335,6 @@
     padding: 40px 20px 50px;
     text-align: center;
   }
-
   footer img {
     height: 30px;
     width: 30px;
@@ -368,7 +342,6 @@
     opacity: 0.8;
     margin-bottom: 10px;
   }
-
   footer .foot-word {
     font-family: var(--utility);
     font-size: 0.72rem;
@@ -376,7 +349,31 @@
     text-transform: uppercase;
     color: var(--ink-dim);
   }
-
+  footer .foot-links {
+    margin: 10px 0 0;
+    font-family: var(--utility);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  footer .foot-links a {
+    color: var(--ink-dim);
+    text-decoration: none;
+  }
+  footer .foot-links a:hover { color: var(--gold-bright); }
+  footer .foot-links a.tools-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  footer .foot-links a.tools-link img {
+    height: 16px;
+    width: 16px;
+    object-fit: contain;
+    border-radius: 50%;
+    margin: 0;
+    opacity: 1;
+  }
   :focus-visible {
     outline: 2px solid var(--gold-bright);
     outline-offset: 3px;
@@ -384,9 +381,7 @@
 </style>
 </head>
 <body>
-
 <div class="stars"></div>
-
 <header>
   <a class="brand" href="#top">
     <img src="crest.png" alt="cCc Family crest" />
@@ -396,9 +391,12 @@
     <a href="#champions">Champions</a>
     <a href="#legends">Legends</a>
     <a href="#league-one">League One</a>
+    <a class="tools-link" href="https://tb-tools.ccc-hq.com">
+      <img src="tb-tools-icon.png" alt="" />
+      Q's TB Tools
+    </a>
   </nav>
 </header>
-
 <section class="hero" id="top">
   <div class="crest-wrap">
     <img src="crest.png" alt="cCc Family crest — crown, shield and crossed swords" />
@@ -414,7 +412,6 @@
     <h2>One Family, Three Clans</h2>
     <p>Every member of cCc carries the same clan tag into Kingdom 276 — clans are grouped by guardsmen level, so you're always growing alongside players moving at your pace.</p>
   </div>
-
   <div class="clan-grid">
     <article class="clan-card" id="champions">
       <span class="tier-badge">G9 · T9</span>
@@ -423,7 +420,6 @@
       <p>Our top clan. Fully matured G9/T9, leading the family towards greatness.</p>
       <a class="cta" href="https://champions.ccc-hq.com">Dashboard</a>
     </article>
-
     <article class="clan-card" id="legends">
       <span class="tier-badge">G8 · T8</span>
       <h3>Legends</h3>
@@ -431,7 +427,6 @@
       <p>G8/T8 — holding the line for the family and pushing toward Champions-ready strength.</p>
      <a class="cta" href="https://legends.ccc-hq.com">Dashboard</a>
     </article>
-
     <article class="clan-card" id="league-one">
       <span class="tier-badge">G6 · G7</span>
       <h3>League One</h3>
@@ -441,12 +436,11 @@
     </article>
   </div>
 </section>
-
 <footer>
   <img src="crest.png" alt="cCc Family crest" />
   <p class="foot-word">cCc Family · Kingdom 276</p>
+  <p class="foot-links"><a class="tools-link" href="https://tb-tools.ccc-hq.com"><img src="tb-tools-icon.png" alt="" />Q's TB Tools</a></p>
 </footer>
-
 <script>
   const cards = document.querySelectorAll('.clan-card');
   const observer = new IntersectionObserver((entries) => {
@@ -459,6 +453,5 @@
   }, { threshold: 0.2 });
   cards.forEach(card => observer.observe(card));
 </script>
-
 </body>
 </html>
