@@ -346,7 +346,7 @@
 <script>
   // Sign-ups are saved by ccc-hq.com's own sign-up Worker (signup-worker/ in this repo).
   // Each clan's member list comes from that clan's own Worker.
-  const SIGNUP_WORKER = 'https://hq-db.ccc-hq.com';
+  const SIGNUP_WORKER = 'https://sk-signup.ccc-hq.com';
   const CLANS = [
     { name: 'cCc Champions', worker: 'https://champions-db.ccc-hq.com/' },
     { name: 'cCc Anatolia', worker: 'https://anatolia-db.ccc-hq.com/' },
@@ -483,7 +483,10 @@
       document.getElementById('result').hidden = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      formError.textContent = err.message || 'Something went wrong. Please try again.';
+      // fetch() itself failing (TypeError) means the sign-up service couldn't be reached at all.
+      formError.textContent = err instanceof TypeError
+        ? 'The sign-up service could not be reached. Please try again later, or tell your clan leaders.'
+        : err.message || 'Something went wrong. Please try again.';
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send my sign-up';
