@@ -483,7 +483,10 @@
       document.getElementById('result').hidden = false;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      formError.textContent = err.message || 'Something went wrong. Please try again.';
+      // fetch() itself failing (TypeError) means the sign-up service couldn't be reached at all.
+      formError.textContent = err instanceof TypeError
+        ? 'The sign-up service could not be reached. Please try again later, or tell your clan leaders.'
+        : err.message || 'Something went wrong. Please try again.';
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send my sign-up';

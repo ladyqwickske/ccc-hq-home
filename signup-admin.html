@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SK Sign-ups Review — cCc Family</title>
+<meta name="robots" content="noindex" />
+<link rel="icon" href="crest.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #05060a;
+    --panel: #0c1020;
+    --panel-line: #1c2440;
+    --row-alt: #0a0e1b;
+    --gold: #d4af37;
+    --gold-bright: #f2d68f;
+    --gold-dim: #8a742f;
+    --emerald-bright: #6fa373;
+    --sapphire: #7f9ff0;
+    --danger: #e57373;
+    --ink: #e9e6da;
+    --ink-dim: #a8a692;
+    --display: 'Cinzel', serif;
+    --body: 'Spectral', serif;
+    --utility: 'Oswald', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+  /* ---------- nav ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px clamp(16px, 4vw, 40px);
+    background: rgba(5,6,10,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand img { height: 34px; width: 34px; object-fit: contain; filter: drop-shadow(0 0 6px rgba(212,175,55,0.35)); }
+  .brand-word { font-family: var(--utility); letter-spacing: 0.14em; font-size: 0.85rem; color: var(--gold-bright); }
+  .head-links { display: flex; gap: 18px; align-items: center; }
+  .head-links a, .link-btn {
+    font-family: var(--utility);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-dim);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .head-links a:hover, .link-btn:hover { color: var(--gold-bright); }
+  /* ---------- page ---------- */
+  main { position: relative; z-index: 1; max-width: 1500px; margin: 0 auto; padding: 36px 16px 80px; }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    margin: 0 0 6px;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, var(--gold-dim) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  h2 { font-family: var(--display); color: var(--gold-bright); font-size: 1.2rem; margin: 0 0 12px; }
+  .sub { color: var(--ink-dim); margin: 0 0 24px; }
+  .card {
+    background: linear-gradient(180deg, var(--panel) 0%, #080a15 100%);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .login { max-width: 440px; margin: 60px auto; }
+  label.field { display: block; font-family: var(--utility); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 6px; }
+  input[type="text"], input[type="password"], input[type="search"], select, textarea {
+    font: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: #080b16;
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    padding: 8px 10px;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); outline: none; }
+  .login input { width: 100%; margin-bottom: 12px; }
+  .check { display: flex; gap: 8px; align-items: center; color: var(--ink-dim); font-size: 0.95rem; margin-bottom: 16px; }
+  .check input { accent-color: var(--gold); }
+  .btn {
+    font-family: var(--utility);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--void);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    border: 0;
+    border-radius: 2px;
+    padding: 10px 18px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn.ghost { background: none; color: var(--gold-bright); border: 1px solid var(--gold-dim); }
+  .btn:disabled { opacity: 0.6; cursor: wait; }
+  .error { color: var(--danger); min-height: 1.3em; margin: 10px 0 0; }
+  /* ---------- summary ---------- */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat { text-align: center; padding: 14px 10px; }
+  .stat b { display: block; font-family: var(--display); font-size: 1.7rem; color: var(--gold-bright); line-height: 1.1; }
+  .stat span { font-family: var(--utility); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); }
+  /* ---------- toolbar ---------- */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 14px; }
+  .toolbar .grow { flex: 1 1 200px; }
+  .toolbar .grow input { width: 100%; }
+  .toolbar label.field { margin-bottom: 4px; }
+  .count { color: var(--ink-dim); font-size: 0.9rem; margin: 0 0 8px; }
+  /* ---------- table ---------- */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--panel-line); border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  th, td { padding: 9px 10px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--panel-line); }
+  th {
+    position: sticky;
+    top: 0;
+    background: #0e1326;
+    font-family: var(--utility);
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-bright);
+    white-space: nowrap;
+  }
+  th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+  th button:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 2px; }
+  th .arrow { color: var(--gold-dim); font-size: 0.8em; min-width: 0.8em; }
+  th[aria-sort] .arrow { color: var(--gold-bright); }
+  tbody tr:nth-child(even) td { background: var(--row-alt); }
+  tbody tr.status-accepted td:first-child { box-shadow: inset 3px 0 0 var(--emerald-bright); }
+  tbody tr.status-declined td { color: var(--ink-dim); }
+  tbody tr.status-declined td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
+  td.name { font-weight: 600; white-space: nowrap; }
+  td.nowrap { white-space: nowrap; }
+  .goals { margin: 0; padding-left: 16px; min-width: 190px; }
+  .badge {
+    display: inline-block;
+    font-family: var(--utility);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    padding: 1px 6px;
+    margin: 2px 4px 0 0;
+    font-weight: 400;
+  }
+  .badge.warn { color: var(--void); background: #e0a650; }
+  .badge.info { color: var(--void); background: var(--sapphire); }
+  .badge.no { color: var(--ink-dim); border: 1px solid var(--panel-line); }
+  td.review { min-width: 250px; }
+  .review-row { display: flex; gap: 6px; margin-bottom: 6px; }
+  .review-row select { flex: 1; min-width: 0; padding: 6px 8px; font-size: 0.88rem; }
+  .review textarea { width: 100%; min-height: 38px; resize: vertical; font-size: 0.88rem; padding: 6px 8px; }
+  .save-state { font-size: 0.78rem; color: var(--ink-dim); min-height: 1.1em; }
+  .save-state.ok { color: var(--emerald-bright); }
+  .save-state.bad { color: var(--danger); }
+  .empty { padding: 30px; text-align: center; color: var(--ink-dim); }
+  /* ---------- accepted lists ---------- */
+  .lists { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+  @media (max-width: 760px) { .lists { grid-template-columns: 1fr; } }
+  .list-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .list-head h2 { margin: 0; }
+  .lists ol { margin: 0; padding-left: 22px; color: var(--ink); }
+  .lists li span { color: var(--ink-dim); font-size: 0.88rem; }
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="index.html">
+    <img src="crest.png" alt="cCc Family crest" />
+    <span class="brand-word">cCc Family</span>
+  </a>
+  <nav class="head-links">
+    <a href="signup.html">Sign-up form</a>
+    <button class="link-btn" id="logoutBtn" type="button" hidden>Log out</button>
+  </nav>
+</header>
+<main>
+  <section class="card login" id="loginCard">
+    <h1>Sign-ups Review</h1>
+    <p class="sub">For the SK organisers. Enter the admin key (the Worker's <code>ADMIN_KEY</code>).</p>
+    <form id="loginForm">
+      <label class="field" for="adminKey">Admin key</label>
+      <input type="password" id="adminKey" autocomplete="current-password" required />
+      <label class="check"><input type="checkbox" id="remember" /> Remember on this device</label>
+      <button class="btn" type="submit" id="loginBtn">Open</button>
+      <p class="error" id="loginError" role="alert"></p>
+    </form>
+  </section>
+
+  <section id="app" hidden>
+    <h1 id="pageTitle">Sign-ups Review</h1>
+    <p class="sub">Accept members, assign their SK clan and keep notes. Changes save as you make them. Click a column title to sort.</p>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="toolbar">
+      <div>
+        <label class="field" for="fSeason">Season</label>
+        <select id="fSeason"></select>
+      </div>
+      <div class="grow">
+        <label class="field" for="fSearch">Search</label>
+        <input type="search" id="fSearch" placeholder="Name, clan, comment…" />
+      </div>
+      <div>
+        <label class="field" for="fPart">Takes part</label>
+        <select id="fPart"><option value="">All</option><option value="yes" selected>Yes</option><option value="no">No</option></select>
+      </div>
+      <div>
+        <label class="field" for="fWants">Wants</label>
+        <select id="fWants"><option value="">All</option><option value="main">SK7 Main</option><option value="academy">Academy</option></select>
+      </div>
+      <div>
+        <label class="field" for="fStatus">Status</label>
+        <select id="fStatus"><option value="">All</option><option value="pending">Pending</option><option value="accepted">Accepted</option><option value="declined">Declined</option></select>
+      </div>
+      <div>
+        <label class="field" for="fAssigned">Assigned</label>
+        <select id="fAssigned"><option value="">All</option><option value="main">SK7 Main</option><option value="academy">Academy</option><option value="none">Not assigned</option></select>
+      </div>
+      <button class="btn ghost" type="button" id="refreshBtn">Refresh</button>
+      <button class="btn ghost" type="button" id="csvBtn">Export CSV</button>
+    </div>
+
+    <p class="count" id="count"></p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr id="headRow"></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="lists">
+      <section class="card">
+        <div class="list-head"><h2 id="mainTitle">cCc 276 SK7 Main</h2><button class="btn ghost" type="button" data-copy="main">Copy names</button></div>
+        <ol id="listMain"></ol>
+      </section>
+      <section class="card">
+        <div class="list-head"><h2 id="academyTitle">Academy clan</h2><button class="btn ghost" type="button" data-copy="academy">Copy names</button></div>
+        <ol id="listAcademy"></ol>
+      </section>
+    </div>
+  </section>
+</main>
+<script>
+  // Sign-ups and reviews live in ccc-hq.com's sign-up Worker (signup-worker/ in this repo).
+  const SIGNUP_WORKER = 'https://hq-db.ccc-hq.com';
+  const KEY_STORE = 'ccc_signup_admin_key';
+  const SORT_STORE = 'ccc_signup_admin_sort';
+  const SK_CLANS = { main: 'cCc 276 SK7 Main', academy: 'Academy clan' };
+  const BUDGET_ORDER = ['not_much', 'gold_pass', 'gold_forest', 'all_passes', 'passes_hercules', 'whatever_it_takes'];
+  const START_ORDER = ['minute_it_starts', 'day_it_starts', 'few_days_later', 'later_in_season'];
+  const STATUS_ORDER = ['pending', 'accepted', 'declined'];
+
+  // Columns: label, sort value, and how the cell is drawn.
+  const COLUMNS = [
+    { key: 'member', label: 'Member', sort: s => s.memberName.toLowerCase() },
+    { key: 'clan', label: 'Home clan', sort: s => s.clan.toLowerCase() },
+    { key: 'part', label: 'Takes part', sort: s => (s.participate ? 0 : 1) },
+    { key: 'wants', label: 'Wants', sort: s => s.codes.skClan || 'z' },
+    { key: 'goals', label: 'Goals', sort: s => s.goals.join(', ').toLowerCase() },
+    { key: 'played', label: 'Played SK', sort: s => s.playedBefore || 'z' },
+    { key: 'budget', label: 'Budget', sort: s => orderOf(BUDGET_ORDER, s.codes.budget) },
+    { key: 'start', label: 'Starts', sort: s => orderOf(START_ORDER, s.codes.startWhen) },
+    { key: 'signed', label: 'Signed up', sort: s => s.createdAt },
+    { key: 'review', label: 'Review', sort: s => orderOf(STATUS_ORDER, s.codes.status) * 10 + (s.codes.assignedClan === 'main' ? 0 : s.codes.assignedClan ? 1 : 2) },
+  ];
+  const orderOf = (list, v) => { const i = list.indexOf(v); return i === -1 ? list.length : i; };
+
+  let adminKey = '';
+  let signups = [];
+  let currentSeason = '';
+  let sort = { key: 'signed', dir: 'desc' };
+
+  const $ = (id) => document.getElementById(id);
+  const storage = (area) => { try { return window[area]; } catch (e) { return null; } };
+  function readStored(name) {
+    for (const area of ['sessionStorage', 'localStorage']) {
+      try { const v = storage(area) && storage(area).getItem(name); if (v) return v; } catch (e) {}
+    }
+    return '';
+  }
+  function store(area, name, value) {
+    try { const s = storage(area); if (!s) return; if (value) s.setItem(name, value); else s.removeItem(name); } catch (e) {}
+  }
+  try { const saved = JSON.parse(readStored(SORT_STORE) || 'null'); if (saved && saved.key) sort = saved; } catch (e) {}
+
+  function el(tag, props, ...children) {
+    const node = document.createElement(tag);
+    Object.entries(props || {}).forEach(([k, v]) => {
+      if (k === 'class') node.className = v;
+      else if (k === 'text') node.textContent = v;
+      else node.setAttribute(k, v);
+    });
+    children.flat().forEach(c => { if (c !== null && c !== undefined && c !== false) node.append(c); });
+    return node;
+  }
+  const fmtDate = (iso) => iso ? new Date(iso).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+
+  async function api(path, options = {}) {
+    const res = await fetch(SIGNUP_WORKER + path, {
+      ...options,
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + adminKey, ...(options.headers || {}) },
+    });
+    const body = await res.json().catch(() => ({}));
+    if (res.status === 401) { const e = new Error('The admin key is not right.'); e.unauthorized = true; throw e; }
+    if (!res.ok || body.success === false) throw new Error(body.error || 'Request failed (HTTP ' + res.status + ').');
+    return body;
+  }
+
+  // ---------------------------------------------------------------- sign in
+  $('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    adminKey = $('adminKey').value.trim();
+    $('loginBtn').disabled = true;
+    $('loginError').textContent = '';
+    try {
+      await load();
+      store($('remember').checked ? 'localStorage' : 'sessionStorage', KEY_STORE, adminKey);
+      showApp();
+    } catch (err) {
+      $('loginError').textContent = err.message;
+    } finally {
+      $('loginBtn').disabled = false;
+    }
+  });
+
+  $('logoutBtn').addEventListener('click', () => {
+    store('localStorage', KEY_STORE, '');
+    store('sessionStorage', KEY_STORE, '');
+    location.reload();
+  });
+
+  function showApp() {
+    $('loginCard').hidden = true;
+    $('app').hidden = false;
+    $('logoutBtn').hidden = false;
+  }
+
+  async function load() {
+    const [list, status] = await Promise.all([
+      api('/admin/signups'),
+      fetch(SIGNUP_WORKER + '/status').then(r => r.json()).catch(() => ({})),
+    ]);
+    signups = list.signups || [];
+    const seasons = [...new Set(signups.map(s => s.season))];
+    if (status.season && !seasons.includes(status.season)) seasons.unshift(status.season);
+    const picked = $('fSeason').value || status.season || seasons[0] || '';
+    $('fSeason').replaceChildren(...seasons.map(s => el('option', { value: s, text: s })));
+    $('fSeason').value = picked;
+    currentSeason = picked;
+    render();
+  }
+
+  // ---------------------------------------------------------------- table
+  function filtered() {
+    const q = $('fSearch').value.trim().toLowerCase();
+    const part = $('fPart').value, wants = $('fWants').value, status = $('fStatus').value, assigned = $('fAssigned').value;
+    return signups.filter(s => s.season === currentSeason
+      && (!part || (part === 'yes') === s.participate)
+      && (!wants || s.codes.skClan === wants)
+      && (!status || s.codes.status === status)
+      && (!assigned || (assigned === 'none' ? !s.codes.assignedClan : s.codes.assignedClan === assigned))
+      && (!q || [s.memberName, s.clan, s.comment, s.targetLevel].join(' ').toLowerCase().includes(q)));
+  }
+
+  function sorted(rows) {
+    const col = COLUMNS.find(c => c.key === sort.key) || COLUMNS[0];
+    const dir = sort.dir === 'asc' ? 1 : -1;
+    return rows.slice().sort((a, b) => {
+      const x = col.sort(a), y = col.sort(b);
+      if (x < y) return -dir;
+      if (x > y) return dir;
+      return a.memberName.localeCompare(b.memberName, undefined, { sensitivity: 'base' });
+    });
+  }
+
+  function renderHead() {
+    $('headRow').replaceChildren(...COLUMNS.map(c => {
+      const active = sort.key === c.key;
+      const th = el('th', active ? { 'aria-sort': sort.dir === 'asc' ? 'ascending' : 'descending' } : {},
+        el('button', { type: 'button' }, c.label, el('span', { class: 'arrow', text: active ? (sort.dir === 'asc' ? '▲' : '▼') : '↕' })));
+      th.querySelector('button').addEventListener('click', () => {
+        sort = { key: c.key, dir: active && sort.dir === 'asc' ? 'desc' : 'asc' };
+        store('localStorage', SORT_STORE, JSON.stringify(sort));
+        render();
+      });
+      return th;
+    }));
+  }
+
+  function reviewCell(s) {
+    const status = el('select', { 'aria-label': 'Status for ' + s.memberName },
+      ...STATUS_ORDER.map(v => el('option', { value: v, text: v[0].toUpperCase() + v.slice(1) })));
+    status.value = s.codes.status;
+    const clan = el('select', { 'aria-label': 'SK clan for ' + s.memberName },
+      el('option', { value: '', text: '— SK clan —' }),
+      ...Object.entries(SK_CLANS).map(([v, label]) => el('option', { value: v, text: v === 'main' ? 'SK7 Main' : 'Academy' })));
+    clan.value = s.codes.assignedClan;
+    clan.disabled = s.codes.status !== 'accepted';
+    const comment = el('textarea', { rows: '1', placeholder: 'Comment…', 'aria-label': 'Comment for ' + s.memberName });
+    comment.value = s.comment;
+    const state = el('div', { class: 'save-state' });
+
+    async function save() {
+      // Accepting needs an SK clan: start from the clan the member asked for.
+      if (status.value === 'accepted' && !clan.value) clan.value = s.codes.skClan || 'main';
+      if (status.value !== 'accepted') clan.value = '';
+      clan.disabled = status.value !== 'accepted';
+      state.className = 'save-state';
+      state.textContent = 'Saving…';
+      try {
+        const r = await api('/admin/signups/review', {
+          method: 'POST',
+          body: JSON.stringify({ id: s.id, status: status.value, assignedClan: clan.value, comment: comment.value }),
+        });
+        Object.assign(s, { status: r.status, assignedClan: r.assignedClan, comment: r.comment, reviewedAt: r.reviewedAt, changedSinceReview: false });
+        s.codes.status = status.value;
+        s.codes.assignedClan = clan.value;
+        state.className = 'save-state ok';
+        state.textContent = 'Saved ✓';
+        renderSummary();
+        renderLists();
+        const row = status.closest('tr');
+        if (row) row.className = 'status-' + s.codes.status;
+      } catch (err) {
+        state.className = 'save-state bad';
+        state.textContent = err.message;
+        if (err.unauthorized) $('logoutBtn').click();
+      }
+    }
+    status.addEventListener('change', save);
+    clan.addEventListener('change', save);
+    comment.addEventListener('change', save);
+    return el('td', { class: 'review' }, el('div', { class: 'review-row' }, status, clan), comment, state);
+  }
+
+  function renderRows(rows) {
+    if (!rows.length) {
+      $('rows').replaceChildren(el('tr', {}, el('td', { class: 'empty', colspan: String(COLUMNS.length), text: 'No sign-ups match these filters.' })));
+      return;
+    }
+    $('rows').replaceChildren(...rows.map(s => el('tr', { class: 'status-' + s.codes.status },
+      el('td', { class: 'name' }, s.memberName,
+        s.verified ? null : el('div', {}, el('span', { class: 'badge warn', title: 'The clan member list could not be checked when this was sent', text: 'Name not checked' })),
+        s.changedSinceReview ? el('div', {}, el('span', { class: 'badge info', title: 'The member sent the form again after the last review', text: 'Changed since review' })) : null),
+      el('td', { class: 'nowrap', text: s.clan }),
+      el('td', {}, s.participate ? 'Yes' : el('span', { class: 'badge no', text: 'No' })),
+      el('td', { class: 'nowrap', text: s.codes.skClan === 'main' ? 'SK7 Main' : s.codes.skClan === 'academy' ? 'Academy' : '' }),
+      el('td', {}, s.goals.length ? el('ul', { class: 'goals' }, ...s.goals.map(g => el('li', { text: g + (/other level/.test(g) && s.targetLevel ? ': ' + s.targetLevel : '') }))) : ''),
+      el('td', { text: s.playedBefore }),
+      el('td', { text: s.budget }),
+      el('td', { text: s.startWhen }),
+      el('td', { class: 'nowrap', text: fmtDate(s.createdAt), title: s.updatedAt !== s.createdAt ? 'Last changed ' + fmtDate(s.updatedAt) : '' }),
+      reviewCell(s),
+    )));
+  }
+
+  function renderSummary() {
+    const season = signups.filter(s => s.season === currentSeason);
+    const part = season.filter(s => s.participate);
+    const n = (f) => part.filter(f).length;
+    const stats = [
+      ['Signed up', season.length],
+      ['Taking part', part.length],
+      ['Pending', n(s => s.codes.status === 'pending')],
+      ['Accepted · SK7 Main', n(s => s.codes.status === 'accepted' && s.codes.assignedClan === 'main')],
+      ['Accepted · Academy', n(s => s.codes.status === 'accepted' && s.codes.assignedClan === 'academy')],
+      ['Declined', n(s => s.codes.status === 'declined')],
+    ];
+    $('stats').replaceChildren(...stats.map(([label, value]) => el('div', { class: 'card stat' }, el('b', { text: String(value) }), el('span', { text: label }))));
+  }
+
+  function acceptedIn(clan) {
+    return signups.filter(s => s.season === currentSeason && s.codes.status === 'accepted' && s.codes.assignedClan === clan)
+      .sort((a, b) => a.memberName.localeCompare(b.memberName, undefined, { sensitivity: 'base' }));
+  }
+  function renderLists() {
+    [['main', 'listMain', 'mainTitle', 'cCc 276 SK7 Main'], ['academy', 'listAcademy', 'academyTitle', 'Academy clan']].forEach(([clan, listId, titleId, title]) => {
+      const members = acceptedIn(clan);
+      $(titleId).textContent = `${title} (${members.length})`;
+      $(listId).replaceChildren(...(members.length
+        ? members.map(s => el('li', {}, s.memberName + ' ', el('span', { text: '— ' + s.clan })))
+        : [el('li', { class: 'empty', text: 'Nobody accepted yet.' })]));
+    });
+  }
+
+  function render() {
+    const rows = sorted(filtered());
+    $('pageTitle').textContent = (currentSeason ? currentSeason + ' ' : '') + 'Sign-ups Review';
+    $('count').textContent = `${rows.length} of ${signups.filter(s => s.season === currentSeason).length} sign-ups shown`;
+    renderHead();
+    renderRows(rows);
+    renderSummary();
+    renderLists();
+  }
+
+  ['fSearch', 'fPart', 'fWants', 'fStatus', 'fAssigned'].forEach(id => $(id).addEventListener('input', render));
+  $('fSeason').addEventListener('change', () => { currentSeason = $('fSeason').value; render(); });
+  $('refreshBtn').addEventListener('click', async () => {
+    try { await load(); } catch (err) { alert(err.message); if (err.unauthorized) $('logoutBtn').click(); }
+  });
+
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', async () => {
+    const names = acceptedIn(btn.dataset.copy).map(s => s.memberName).join('\n');
+    try {
+      await navigator.clipboard.writeText(names);
+      btn.textContent = 'Copied ✓';
+    } catch (e) {
+      btn.textContent = 'Copy failed';
+    }
+    setTimeout(() => { btn.textContent = 'Copy names'; }, 1500);
+  }));
+
+  // The rows shown (filters and sort applied) as a spreadsheet.
+  $('csvBtn').addEventListener('click', () => {
+    const head = ['Member', 'Home clan', 'Takes part', 'Wants', 'Goals', 'Target level', 'Played SK before', 'Budget', 'Starts', 'Signed up (UTC)', 'Status', 'Assigned SK clan', 'Comment'];
+    const cell = (v) => { const t = String(v ?? ''); return /[",\n;]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+    const lines = sorted(filtered()).map(s => [s.memberName, s.clan, s.participate ? 'Yes' : 'No', s.codes.skClan ? SK_CLANS[s.codes.skClan] : '',
+      s.goals.join('; '), s.targetLevel, s.playedBefore, s.budget, s.startWhen, s.createdAt, s.status, s.assignedClan, s.comment].map(cell).join(','));
+    const blob = new Blob(['﻿' + [head.join(','), ...lines].join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+    const a = el('a', { href: URL.createObjectURL(blob), download: (currentSeason || 'sk') + '-signups.csv' });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  // Signed in before on this device: open straight away.
+  (async () => {
+    const saved = readStored(KEY_STORE);
+    if (!saved) return;
+    adminKey = saved;
+    try {
+      await load();
+      showApp();
+    } catch (err) {
+      store('localStorage', KEY_STORE, '');
+      store('sessionStorage', KEY_STORE, '');
+      $('loginError').textContent = err.unauthorized ? 'Please enter the admin key again.' : err.message;
+    }
+  })();
+</script>
+</body>
+</html>

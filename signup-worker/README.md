@@ -18,7 +18,33 @@ npx wrangler secret put ADMIN_KEY         # any long random string; needed to re
 npm run deploy                            # → https://hq-db.ccc-hq.com
 ```
 
+Setting it up in the Cloudflare dashboard instead: create the D1 database and run
+the SQL files in `migrations/` in its Console, create a Worker with the code of
+`src/index.js`, add a D1 binding named `DB`, add the `[vars]` below as text
+variables and `ADMIN_KEY` as a secret, and add the custom domain `hq-db.ccc-hq.com`
+(Worker → Settings → Domains & Routes).
+
 Check it: `https://hq-db.ccc-hq.com/status` should show `{"success":true,"open":true,"season":"SK7"}`.
+
+## Reviewing sign-ups: ccc-hq.com/signup-admin.html
+
+The review page (not linked from the site) asks for the `ADMIN_KEY`. On it you can:
+
+- sort by any column and filter by status, SK clan, and whether members take part
+- set each sign-up's status (Pending / Accepted / Declined), pick the SK clan for
+  accepted members, and add a comment; changes save straight away
+- see the accepted lists per SK clan (with a "Copy names" button), and export the
+  rows shown as CSV
+
+A member who sends the form again keeps their review; the page marks them
+"Changed since review".
+
+**Updating an existing setup for the review page** (once):
+
+1. D1 → `ccc-hq-signups` → Console: run the SQL in `migrations/0002_review.sql`
+   (or `npm run migrate`, which runs only the migrations not yet applied).
+2. Worker → Edit code: replace it with the new `src/index.js` and deploy
+   (or `npm run deploy`).
 
 ## Settings (`wrangler.toml` → `[vars]`, then `npm run deploy`)
 

@@ -80,9 +80,38 @@ try {
   const angel = (list.signups || []).find(s => s.memberName === 'ANGEL');
   check('the last answer wins (ANGEL now takes part)', angel && angel.participate && angel.targetLevel === 'G7 / T7');
 
+  check('new sign-ups are pending', a && a.status === 'Pending' && a.assignedClan === '' && a.codes.budget === 'whatever_it_takes');
+
+  const review = async (body, auth = key) => {
+    const res = await fetch(base + '/admin/signups/review', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth}` }, body: JSON.stringify(body),
+    });
+    return { status: res.status, body: await res.json() };
+  };
+  let v = await review({ id: a.id, status: 'accepted', assignedClan: 'academy', comment: 'Good fit for Academy' }, 'wrong');
+  check('a review needs the admin key', v.status === 401);
+  v = await review({ id: a.id, status: 'accepted' });
+  check('accepting needs an SK clan', v.status === 400 && /SK clan/.test(v.body.error));
+  v = await review({ id: a.id, status: 'maybe' });
+  check('an unknown status is refused', v.status === 400);
+  v = await review({ id: 999999, status: 'pending' });
+  check('an unknown id is refused', v.status === 404);
+  v = await review({ id: a.id, status: 'accepted', assignedClan: 'academy', comment: 'Good fit for Academy' });
+  check('a sign-up is accepted into a clan', v.status === 200 && v.body.status === 'Accepted' && v.body.assignedClan === 'Academy clan');
+  v = await review({ id: angel.id, status: 'declined', assignedClan: 'main', comment: '' });
+  check('declining drops the SK clan', v.status === 200 && v.body.assignedClan === '');
+
+  r = await post({ ...full, startWhen: 'later_in_season' });
+  res = await fetch(base + '/admin/signups?status=accepted&assigned=academy', { headers: { Authorization: `Bearer ${key}` } });
+  const accepted = await res.json();
+  const a2 = accepted.signups && accepted.signups[0];
+  check('the accepted list per clan', accepted.count === 1 && a2.memberName === 'Andalusy');
+  check('sending the form again keeps the review', a2 && a2.status === 'Accepted' && a2.comment === 'Good fit for Academy' && a2.startWhen === 'Later in the season');
+  check('…and flags the change since the review', a2 && a2.changedSinceReview === true);
+
   res = await fetch(base + '/admin/signups?format=csv', { headers: { Authorization: `Bearer ${key}` } });
   const csv = await res.text();
-  check('CSV export', res.headers.get('Content-Type').startsWith('text/csv') && csv.split('\n')[0].startsWith('Season,Clan,Member') && csv.trim().split('\n').length === 4);
+  check('CSV export', res.headers.get('Content-Type').startsWith('text/csv') && csv.split('\n')[0].startsWith('Season,Clan,Member') && csv.split('\n')[0].includes('Assigned SK clan') && csv.trim().split('\n').length === 4);
 } finally {
   fake.close();
 }

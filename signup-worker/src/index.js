@@ -6,9 +6,12 @@
 //                           member is on their clan's member list, then saves it. Signing up
 //                           again (same season, clan and member) updates the row.
 //   GET  /admin/signups     every sign-up (needs "Authorization: Bearer <ADMIN_KEY>");
-//                           ?season=SK7 for one season, ?format=csv for a spreadsheet
+//                           ?season=SK7 for one season, ?status=accepted, ?assigned=main|academy,
+//                           ?format=csv for a spreadsheet
+//   POST /admin/signups/review  { id, status, assignedClan, comment } — the review page
+//                           (signup-admin.html) accepts/declines a sign-up and assigns its SK clan
 //
-// Settings: wrangler.toml [vars]. Table: migrations/0001_signups.sql.
+// Settings: wrangler.toml [vars]. Table: migrations/0001_signups.sql + 0002_review.sql.
 
 export const SK_CLANS = { main: 'cCc 276 SK7 Main', academy: 'Academy clan' };
 export const GOALS = {
@@ -32,6 +35,8 @@ export const START_WHEN = {
   few_days_later: 'After a few days',
   later_in_season: 'Later in the season',
 };
+
+export const STATUSES = { pending: 'Pending', accepted: 'Accepted', declined: 'Declined' };
 
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
@@ -180,14 +185,19 @@ async function submitSignup(env, body, now = new Date()) {
   };
 }
 
-/** Every sign-up, newest change first, with readable labels for the stored codes. */
+/**
+ * Every sign-up, newest change first, with readable labels for the stored codes
+ * (and the codes themselves under `codes`, for sorting on the review page).
+ */
 async function listSignups(env, params) {
-  const s = params.get('season');
-  const stmt = s
-    ? env.DB.prepare('SELECT * FROM signups WHERE season = ? ORDER BY updated_at DESC').bind(s)
-    : env.DB.prepare('SELECT * FROM signups ORDER BY updated_at DESC');
-  const { results } = await stmt.all();
+  const where = [], binds = [];
+  if (params.get('season')) { where.push('season = ?'); binds.push(params.get('season')); }
+  if (params.get('status')) { where.push('status = ?'); binds.push(params.get('status')); }
+  if (params.get('assigned')) { where.push('assigned_clan = ?'); binds.push(params.get('assigned')); }
+  const sql = `SELECT * FROM signups${where.length ? ' WHERE ' + where.join(' AND ') : ''} ORDER BY updated_at DESC`;
+  const { results } = await env.DB.prepare(sql).bind(...binds).all();
   return results.map(r => ({
+    id: r.id,
     season: r.season,
     clan: r.home_clan,
     memberName: r.member_name,
@@ -201,7 +211,34 @@ async function listSignups(env, params) {
     startWhen: r.start_when ? START_WHEN[r.start_when] || r.start_when : '',
     createdAt: r.created_at,
     updatedAt: r.updated_at,
+    status: STATUSES[r.status] || r.status,
+    assignedClan: r.assigned_clan ? SK_CLANS[r.assigned_clan] || r.assigned_clan : '',
+    comment: r.admin_comment || '',
+    reviewedAt: r.reviewed_at || '',
+    // the member sent the form again after the last review
+    changedSinceReview: !!(r.reviewed_at && r.updated_at > r.reviewed_at),
+    codes: {
+      skClan: r.sk_clan || '', goals: r.goals ? JSON.parse(r.goals) : [], budget: r.budget || '',
+      startWhen: r.start_when || '', status: r.status, assignedClan: r.assigned_clan || '',
+    },
   }));
+}
+
+/** The review page: accept / decline a sign-up, assign its SK clan, add a comment. */
+async function reviewSignup(env, body, now = new Date()) {
+  if (!body || typeof body !== 'object') throw new HttpError(400, 'Request body must be a JSON object');
+  const id = Number(body.id);
+  if (!Number.isInteger(id) || id <= 0) throw new HttpError(400, 'id is required');
+  const status = pick(body.status, STATUSES, 'a status');
+  // Only an accepted sign-up has an SK clan; accepting needs one.
+  let assigned = null;
+  if (status === 'accepted') assigned = pick(body.assignedClan, SK_CLANS, 'the SK clan to assign');
+  const comment = text(body.comment, 2000) || null;
+  const at = now.toISOString();
+  const res = await env.DB.prepare('UPDATE signups SET status = ?, assigned_clan = ?, admin_comment = ?, reviewed_at = ? WHERE id = ?')
+    .bind(status, assigned, comment, at, id).run();
+  if (!res.meta || !res.meta.changes) throw new HttpError(404, `No sign-up with id ${id}`);
+  return { success: true, id, status: STATUSES[status], assignedClan: assigned ? SK_CLANS[assigned] : '', comment: comment || '', reviewedAt: at };
 }
 
 const CSV_COLUMNS = [
@@ -209,6 +246,7 @@ const CSV_COLUMNS = [
   ['Takes part', 'participate'], ['SK clan', 'skClan'], ['Goals', 'goals'], ['Target level', 'targetLevel'],
   ['Played an SK before', 'playedBefore'], ['Budget', 'budget'], ['Starts', 'startWhen'],
   ['First signed up (UTC)', 'createdAt'], ['Last changed (UTC)', 'updatedAt'],
+  ['Status', 'status'], ['Assigned SK clan', 'assignedClan'], ['Comment', 'comment'], ['Reviewed (UTC)', 'reviewedAt'],
 ];
 
 function signupsCsv(rows) {
@@ -250,6 +288,16 @@ export default {
             });
           }
           return json(200, { success: true, count: signups.length, signups });
+        }
+        case 'POST /admin/signups/review': {
+          if (!authorized(request, env)) return json(401, { success: false, error: 'Unauthorized' });
+          let body;
+          try {
+            body = await request.json();
+          } catch {
+            throw new HttpError(400, 'Request body must be JSON');
+          }
+          return json(200, await reviewSignup(env, body));
         }
         default:
           return json(404, { success: false, error: `No route for ${route}` });
