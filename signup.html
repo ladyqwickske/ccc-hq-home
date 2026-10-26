@@ -150,6 +150,8 @@
     margin-bottom: 4px;
     padding: 0;
   }
+  .amount { color: var(--gold-bright); white-space: nowrap; }
+  .footnote { color: var(--ink-dim); font-size: 0.85rem; font-style: italic; margin: 10px 0 0; }
   .hint {
     color: var(--ink-dim);
     font-size: 0.92rem;
@@ -308,13 +310,14 @@
       <fieldset>
         <legend>What is your budget to spend?</legend>
         <div class="options">
-          <label class="option"><input type="radio" name="budget" value="not_much">Not much</label>
-          <label class="option"><input type="radio" name="budget" value="gold_pass">Only Gold Pass</label>
-          <label class="option"><input type="radio" name="budget" value="gold_forest">Only Gold Pass and Forest Pass</label>
-          <label class="option"><input type="radio" name="budget" value="all_passes">All the passes (Forest, Gold Pass, Elite Pass, …)</label>
-          <label class="option"><input type="radio" name="budget" value="passes_hercules">All the passes and Hercules</label>
-          <label class="option"><input type="radio" name="budget" value="whatever_it_takes">All the passes, Hercules and whatever else it takes</label>
+          <label class="option"><input type="radio" name="budget" value="not_much"><span>Not much <span class="amount">(less than $100)*</span></span></label>
+          <label class="option"><input type="radio" name="budget" value="gold_pass"><span>Only Gold Pass <span class="amount">(between $100 and $200)*</span></span></label>
+          <label class="option"><input type="radio" name="budget" value="gold_forest"><span>Only Gold Pass and Forest Pass <span class="amount">(between $200 and $400)*</span></span></label>
+          <label class="option"><input type="radio" name="budget" value="all_passes"><span>All the passes (Forest, Gold Pass, Elite Pass, …) <span class="amount">(between $400 and $600)*</span></span></label>
+          <label class="option"><input type="radio" name="budget" value="passes_hercules"><span>All the passes and Hercules <span class="amount">(between $600 and $750)*</span></span></label>
+          <label class="option"><input type="radio" name="budget" value="whatever_it_takes"><span>All the passes, Hercules and whatever else it takes <span class="amount">(more than $750)*</span></span></label>
         </div>
+        <p class="footnote">* The amounts are estimates.</p>
       </fieldset>
 
       <fieldset>
