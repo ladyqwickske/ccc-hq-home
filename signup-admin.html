@@ -131,6 +131,22 @@
   .toolbar .grow { flex: 1 1 200px; }
   .toolbar .grow input { width: 100%; }
   .toolbar label.field { margin-bottom: 4px; }
+  .toolbar select.active, .toolbar input.active { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+  .toolbar.filters { padding: 12px; border: 1px solid var(--panel-line); border-radius: 4px; background: rgba(12,16,32,0.6); }
+  .delete-btn {
+    font-family: var(--utility);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--danger);
+    background: none;
+    border: 0;
+    padding: 4px 0 0;
+    cursor: pointer;
+  }
+  .delete-btn:hover { text-decoration: underline; }
+  .delete-btn:disabled { opacity: 0.5; cursor: wait; }
+  .review-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
   .count { color: var(--ink-dim); font-size: 0.9rem; margin: 0 0 8px; }
   /* ---------- table ---------- */
   .table-wrap { overflow-x: auto; border: 1px solid var(--panel-line); border-radius: 4px; }
@@ -188,6 +204,7 @@
   .list-head h2 { margin: 0; }
   .lists ol { margin: 0; padding-left: 22px; color: var(--ink); }
   .lists li span { color: var(--ink-dim); font-size: 0.88rem; }
+  .lists li.none { list-style: none; margin-left: -22px; color: var(--ink-dim); }
 </style>
 </head>
 <body>
@@ -247,6 +264,61 @@
       </div>
       <button class="btn ghost" type="button" id="refreshBtn">Refresh</button>
       <button class="btn ghost" type="button" id="csvBtn">Export CSV</button>
+    </div>
+    <div class="toolbar filters">
+      <div>
+        <label class="field" for="fClan">Home clan</label>
+        <select id="fClan"><option value="">All</option></select>
+      </div>
+      <div>
+        <label class="field" for="fGoal">Goal</label>
+        <select id="fGoal">
+          <option value="">All</option>
+          <option value="golden_cyanide">Golden cyanide stones</option>
+          <option value="sk_title">SK title</option>
+          <option value="fragments">Fragments for main</option>
+          <option value="new_main_t9">New main (T9)</option>
+          <option value="new_main_other">New main (other level)</option>
+        </select>
+      </div>
+      <div>
+        <label class="field" for="fPlayed">Played SK</label>
+        <select id="fPlayed"><option value="">All</option><option value="Yes">Yes</option><option value="No">No</option></select>
+      </div>
+      <div>
+        <label class="field" for="fBudget">Budget</label>
+        <select id="fBudget">
+          <option value="">All</option>
+          <option value="not_much">Not much</option>
+          <option value="gold_pass">Only Gold Pass</option>
+          <option value="gold_forest">Gold + Forest Pass</option>
+          <option value="all_passes">All the passes</option>
+          <option value="passes_hercules">Passes + Hercules</option>
+          <option value="whatever_it_takes">Whatever it takes</option>
+          <option value="min:all_passes">At least all the passes</option>
+        </select>
+      </div>
+      <div>
+        <label class="field" for="fStart">Starts</label>
+        <select id="fStart">
+          <option value="">All</option>
+          <option value="minute_it_starts">The minute it starts</option>
+          <option value="day_it_starts">The day it starts</option>
+          <option value="few_days_later">After a few days</option>
+          <option value="later_in_season">Later in the season</option>
+        </select>
+      </div>
+      <div>
+        <label class="field" for="fFlag">Attention</label>
+        <select id="fFlag">
+          <option value="">All</option>
+          <option value="any">Needs attention</option>
+          <option value="changed">Changed since review</option>
+          <option value="unchecked">Name not checked</option>
+          <option value="comment">Has a comment</option>
+        </select>
+      </div>
+      <button class="btn ghost" type="button" id="clearBtn">Clear filters</button>
     </div>
 
     <p class="count" id="count"></p>
@@ -376,18 +448,44 @@
     $('fSeason').replaceChildren(...seasons.map(s => el('option', { value: s, text: s })));
     $('fSeason').value = picked;
     currentSeason = picked;
+    const clanPicked = $('fClan').value;
+    const homeClans = [...new Set(signups.map(s => s.clan))].sort((a, b) => a.localeCompare(b));
+    $('fClan').replaceChildren(el('option', { value: '', text: 'All' }), ...homeClans.map(c => el('option', { value: c, text: c })));
+    $('fClan').value = homeClans.includes(clanPicked) ? clanPicked : '';
     render();
   }
 
   // ---------------------------------------------------------------- table
+  const FILTER_IDS = ['fSearch', 'fPart', 'fWants', 'fStatus', 'fAssigned', 'fClan', 'fGoal', 'fPlayed', 'fBudget', 'fStart', 'fFlag'];
+
+  function matchesBudget(s, budget) {
+    if (!budget) return true;
+    // "min:<code>": that budget or more
+    if (budget.startsWith('min:')) return !!s.codes.budget && orderOf(BUDGET_ORDER, s.codes.budget) >= orderOf(BUDGET_ORDER, budget.slice(4));
+    return s.codes.budget === budget;
+  }
+  function matchesFlag(s, flag) {
+    if (flag === 'changed') return s.changedSinceReview;
+    if (flag === 'unchecked') return !s.verified;
+    if (flag === 'comment') return !!s.comment;
+    if (flag === 'any') return s.changedSinceReview || !s.verified;
+    return true;
+  }
+
   function filtered() {
-    const q = $('fSearch').value.trim().toLowerCase();
-    const part = $('fPart').value, wants = $('fWants').value, status = $('fStatus').value, assigned = $('fAssigned').value;
+    const v = (id) => $(id).value;
+    const q = v('fSearch').trim().toLowerCase();
     return signups.filter(s => s.season === currentSeason
-      && (!part || (part === 'yes') === s.participate)
-      && (!wants || s.codes.skClan === wants)
-      && (!status || s.codes.status === status)
-      && (!assigned || (assigned === 'none' ? !s.codes.assignedClan : s.codes.assignedClan === assigned))
+      && (!v('fPart') || (v('fPart') === 'yes') === s.participate)
+      && (!v('fWants') || s.codes.skClan === v('fWants'))
+      && (!v('fStatus') || s.codes.status === v('fStatus'))
+      && (!v('fAssigned') || (v('fAssigned') === 'none' ? !s.codes.assignedClan : s.codes.assignedClan === v('fAssigned')))
+      && (!v('fClan') || s.clan === v('fClan'))
+      && (!v('fGoal') || s.codes.goals.includes(v('fGoal')))
+      && (!v('fPlayed') || s.playedBefore === v('fPlayed'))
+      && matchesBudget(s, v('fBudget'))
+      && (!v('fStart') || s.codes.startWhen === v('fStart'))
+      && matchesFlag(s, v('fFlag'))
       && (!q || [s.memberName, s.clan, s.comment, s.targetLevel].join(' ').toLowerCase().includes(q)));
   }
 
@@ -459,7 +557,23 @@
     status.addEventListener('change', save);
     clan.addEventListener('change', save);
     comment.addEventListener('change', save);
-    return el('td', { class: 'review' }, el('div', { class: 'review-row' }, status, clan), comment, state);
+    const remove = el('button', { type: 'button', class: 'delete-btn', text: 'Delete' });
+    remove.addEventListener('click', async () => {
+      if (!confirm(`Delete the sign-up of ${s.memberName} (${s.clan})?\n\nThis can't be undone. They can still send the form again.`)) return;
+      remove.disabled = true;
+      try {
+        await api('/admin/signups/delete', { method: 'POST', body: JSON.stringify({ id: s.id }) });
+        signups = signups.filter(x => x.id !== s.id);
+        render();
+      } catch (err) {
+        remove.disabled = false;
+        state.className = 'save-state bad';
+        state.textContent = err.message;
+        if (err.unauthorized) $('logoutBtn').click();
+      }
+    });
+    return el('td', { class: 'review' }, el('div', { class: 'review-row' }, status, clan), comment,
+      el('div', { class: 'review-foot' }, state, remove));
   }
 
   function renderRows(rows) {
@@ -508,21 +622,28 @@
       $(titleId).textContent = `${title} (${members.length})`;
       $(listId).replaceChildren(...(members.length
         ? members.map(s => el('li', {}, s.memberName + ' ', el('span', { text: '— ' + s.clan })))
-        : [el('li', { class: 'empty', text: 'Nobody accepted yet.' })]));
+        : [el('li', { class: 'none', text: 'Nobody accepted yet.' })]));
     });
   }
 
   function render() {
     const rows = sorted(filtered());
     $('pageTitle').textContent = (currentSeason ? currentSeason + ' ' : '') + 'Sign-ups Review';
-    $('count').textContent = `${rows.length} of ${signups.filter(s => s.season === currentSeason).length} sign-ups shown`;
+    const active = FILTER_IDS.filter(id => $(id).value.trim() !== '');
+    FILTER_IDS.forEach(id => $(id).classList.toggle('active', $(id).value.trim() !== ''));
+    $('count').textContent = `${rows.length} of ${signups.filter(s => s.season === currentSeason).length} sign-ups shown`
+      + (active.length ? ` · ${active.length} filter${active.length > 1 ? 's' : ''} on` : '');
     renderHead();
     renderRows(rows);
     renderSummary();
     renderLists();
   }
 
-  ['fSearch', 'fPart', 'fWants', 'fStatus', 'fAssigned'].forEach(id => $(id).addEventListener('input', render));
+  FILTER_IDS.forEach(id => $(id).addEventListener('input', render));
+  $('clearBtn').addEventListener('click', () => {
+    FILTER_IDS.forEach(id => { $(id).value = ''; });
+    render();
+  });
   $('fSeason').addEventListener('change', () => { currentSeason = $('fSeason').value; render(); });
   $('refreshBtn').addEventListener('click', async () => {
     try { await load(); } catch (err) { alert(err.message); if (err.unauthorized) $('logoutBtn').click(); }

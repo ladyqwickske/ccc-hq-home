@@ -14,6 +14,8 @@
 //                           ?format=csv for a spreadsheet
 //   POST /admin/signups/review  { id, status, assignedClan, comment } — the review page
 //                           (signup-admin.html) accepts/declines a sign-up and assigns its SK clan
+//   POST /admin/signups/delete  { id } — the review page deletes a sign-up for good (the member
+//                           can still send the form again)
 //
 // Settings: wrangler.toml [vars]. Table: migrations/0001_signups.sql + 0002_review.sql.
 
@@ -319,6 +321,20 @@ export default {
             throw new HttpError(400, 'Request body must be JSON');
           }
           return json(200, await reviewSignup(env, body));
+        }
+        case 'POST /admin/signups/delete': {
+          if (!authorized(request, env)) return json(401, { success: false, error: 'Unauthorized' });
+          let body;
+          try {
+            body = await request.json();
+          } catch {
+            throw new HttpError(400, 'Request body must be JSON');
+          }
+          const id = Number(body && body.id);
+          if (!Number.isInteger(id) || id <= 0) throw new HttpError(400, 'id is required');
+          const res = await env.DB.prepare('DELETE FROM signups WHERE id = ?').bind(id).run();
+          if (!res.meta || !res.meta.changes) throw new HttpError(404, `No sign-up with id ${id}`);
+          return json(200, { success: true, id });
         }
         default:
           return json(404, { success: false, error: `No route for ${route}` });

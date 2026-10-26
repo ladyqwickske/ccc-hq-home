@@ -116,6 +116,24 @@ try {
   check('sending the form again keeps the review', a2 && a2.status === 'Accepted' && a2.comment === 'Good fit for Academy' && a2.startWhen === 'Later in the season');
   check('…and flags the change since the review', a2 && a2.changedSinceReview === true);
 
+  const del = async (body, auth = key) => {
+    const res = await fetch(base + '/admin/signups/delete', {
+      method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth}` }, body: JSON.stringify(body),
+    });
+    return { status: res.status, body: await res.json() };
+  };
+  const someone = (list.signups || []).find(s => s.memberName === 'Someone');
+  let d = await del({ id: someone.id }, 'wrong');
+  check('deleting needs the admin key', d.status === 401);
+  d = await del({});
+  check('deleting needs an id', d.status === 400);
+  d = await del({ id: someone.id });
+  check('a sign-up is deleted', d.status === 200 && d.body.success);
+  d = await del({ id: someone.id });
+  check('deleting it again finds nothing', d.status === 404);
+  r = await post({ ...full, clan: 'cCc Champions', memberName: 'Someone' });
+  check('a deleted member can sign up again', r.status === 200 && r.body.success && r.body.updated === false);
+
   res = await fetch(base + '/admin/signups?format=csv', { headers: { Authorization: `Bearer ${key}` } });
   const csv = await res.text();
   check('CSV export', res.headers.get('Content-Type').startsWith('text/csv') && csv.split('\n')[0].startsWith('Season,Clan,Member') && csv.split('\n')[0].includes('Assigned SK clan') && csv.trim().split('\n').length === 4);
