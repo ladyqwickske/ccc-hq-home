@@ -1,7 +1,7 @@
 # ccc-hq-signups — the SK sign-up form's database
 
 The form at **ccc-hq.com/signup.html** sends its answers here. This is a small
-Cloudflare Worker with its own D1 database, at `https://hq-db.ccc-hq.com`. It is
+Cloudflare Worker with its own D1 database, at `https://sk-signup.ccc-hq.com`. It is
 separate from the clans' database Workers. It only *reads* each clan's member
 list (from that clan's Worker) to check that the member really is in the clan
 they picked.
@@ -15,16 +15,16 @@ npx wrangler login
 npx wrangler d1 create ccc-hq-signups     # copy the database_id it prints into wrangler.toml
 npm run migrate                           # creates the signups table
 npx wrangler secret put ADMIN_KEY         # any long random string; needed to read the sign-ups
-npm run deploy                            # → https://hq-db.ccc-hq.com
+npm run deploy                            # → https://sk-signup.ccc-hq.com
 ```
 
 Setting it up in the Cloudflare dashboard instead: create the D1 database and run
 the SQL files in `migrations/` in its Console, create a Worker with the code of
 `src/index.js`, add a D1 binding named `DB`, add the `[vars]` below as text
-variables and `ADMIN_KEY` as a secret, and add the custom domain `hq-db.ccc-hq.com`
+variables and `ADMIN_KEY` as a secret, and add the custom domain `sk-signup.ccc-hq.com`
 (Worker → Settings → Domains & Routes).
 
-Check it: `https://hq-db.ccc-hq.com/status` should show `{"success":true,"open":true,"season":"SK7"}`.
+Check it: `https://sk-signup.ccc-hq.com/status` should show `{"success":true,"open":true,"season":"SK7"}`.
 
 ## Reviewing sign-ups: ccc-hq.com/signup-admin.html
 
@@ -59,7 +59,7 @@ A member who sends the form again keeps their review; the page marks them
 Download them as a spreadsheet (CSV):
 
 ```powershell
-curl -H "Authorization: Bearer <ADMIN_KEY>" "https://hq-db.ccc-hq.com/admin/signups?format=csv&season=SK7" -o sk7-signups.csv
+curl -H "Authorization: Bearer <ADMIN_KEY>" "https://sk-signup.ccc-hq.com/admin/signups?format=csv&season=SK7" -o sk7-signups.csv
 ```
 
 Leave out `format=csv` to get JSON. Or run SQL directly on the database:
