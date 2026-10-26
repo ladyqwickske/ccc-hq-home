@@ -346,7 +346,7 @@
   const SIGNUP_WORKER = 'https://sk-signup.ccc-hq.com';
   const KEY_STORE = 'ccc_signup_admin_key';
   const SORT_STORE = 'ccc_signup_admin_sort';
-  const SK_CLANS = { main: 'cCc 276 SK7 Main', academy: 'Academy clan' };
+  const SK_CLANS = { main: 'Main', academy: 'Academy' };
   const BUDGET_ORDER = ['not_much', 'gold_pass', 'gold_forest', 'all_passes', 'passes_hercules', 'whatever_it_takes'];
   const START_ORDER = ['minute_it_starts', 'day_it_starts', 'few_days_later', 'later_in_season'];
   const STATUS_ORDER = ['pending', 'accepted', 'declined'];
@@ -605,7 +605,7 @@
       ['Signed up', season.length],
       ['Taking part', part.length],
       ['Pending', n(s => s.codes.status === 'pending')],
-      ['Accepted · SK7 Main', n(s => s.codes.status === 'accepted' && s.codes.assignedClan === 'main')],
+      ['Accepted · Main', n(s => s.codes.status === 'accepted' && s.codes.assignedClan === 'main')],
       ['Accepted · Academy', n(s => s.codes.status === 'accepted' && s.codes.assignedClan === 'academy')],
       ['Declined', n(s => s.codes.status === 'declined')],
     ];
@@ -617,7 +617,7 @@
       .sort((a, b) => a.memberName.localeCompare(b.memberName, undefined, { sensitivity: 'base' }));
   }
   function renderLists() {
-    [['main', 'listMain', 'mainTitle', 'cCc 276 SK7 Main'], ['academy', 'listAcademy', 'academyTitle', 'Academy clan']].forEach(([clan, listId, titleId, title]) => {
+    [['main', 'listMain', 'mainTitle', 'Main'], ['academy', 'listAcademy', 'academyTitle', 'Academy']].forEach(([clan, listId, titleId, title]) => {
       const members = acceptedIn(clan);
       $(titleId).textContent = `${title} (${members.length})`;
       $(listId).replaceChildren(...(members.length
