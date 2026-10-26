@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SK Sign-up — cCc Family</title>
+<meta name="description" content="Sign up for the next seasonal kingdom with the cCc Family of Kingdom 276." />
+<link rel="icon" href="crest.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #05060a;
+    --panel: #0c1020;
+    --panel-line: #1c2440;
+    --gold: #d4af37;
+    --gold-bright: #f2d68f;
+    --gold-dim: #8a742f;
+    --emerald-bright: #6fa373;
+    --danger: #e57373;
+    --ink: #e9e6da;
+    --ink-dim: #a8a692;
+    --display: 'Cinzel', serif;
+    --body: 'Spectral', serif;
+    --utility: 'Oswald', sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+  .stars {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(212,175,55,0.35), transparent),
+      radial-gradient(1px 1px at 80% 10%, rgba(111,163,115,0.3), transparent),
+      radial-gradient(1.5px 1.5px at 60% 70%, rgba(63,111,214,0.35), transparent),
+      radial-gradient(1px 1px at 30% 85%, rgba(212,175,55,0.25), transparent),
+      radial-gradient(1px 1px at 90% 60%, rgba(212,175,55,0.2), transparent);
+  }
+  /* ---------- nav ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px clamp(20px, 5vw, 56px);
+    background: rgba(5,6,10,0.75);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(212,175,55,0.15);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+  .brand img {
+    height: 38px;
+    width: 38px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(212,175,55,0.35));
+  }
+  .brand-word {
+    font-family: var(--utility);
+    letter-spacing: 0.14em;
+    font-size: 0.85rem;
+    color: var(--gold-bright);
+  }
+  .back-link {
+    font-family: var(--utility);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-dim);
+  }
+  .back-link:hover, .back-link:focus-visible { color: var(--gold-bright); }
+  /* ---------- page ---------- */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 16px 100px;
+  }
+  .eyebrow {
+    font-family: var(--utility);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--emerald-bright);
+    margin: 0 0 12px;
+    text-align: center;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '✦';
+    color: var(--gold-dim);
+    margin: 0 12px;
+    font-size: 0.7rem;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    text-align: center;
+    margin: 0 0 14px;
+    background: linear-gradient(180deg, var(--gold-bright) 0%, var(--gold) 60%, var(--gold-dim) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .intro {
+    text-align: center;
+    color: var(--ink-dim);
+    font-size: 1.05rem;
+    max-width: 52ch;
+    margin: 0 auto 44px;
+  }
+  form, .result {
+    background: linear-gradient(180deg, var(--panel) 0%, #080a15 100%);
+    border: 1px solid var(--panel-line);
+    border-radius: 4px;
+    padding: clamp(22px, 5vw, 40px);
+  }
+  fieldset {
+    border: 0;
+    margin: 0 0 30px;
+    padding: 0;
+    min-width: 0;
+  }
+  legend, .label {
+    display: block;
+    font-family: var(--display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold-bright);
+    margin-bottom: 4px;
+    padding: 0;
+  }
+  .hint {
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+    margin: 0 0 12px;
+  }
+  select, input[type="text"] {
+    width: 100%;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: #080b16;
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    padding: 11px 12px;
+    margin-bottom: 12px;
+  }
+  select:disabled { opacity: 0.55; }
+  select:focus, input[type="text"]:focus { border-color: var(--gold); outline: none; }
+  .options { display: grid; gap: 8px; }
+  .options.two { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 520px) { .options.two { grid-template-columns: 1fr; } }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    border: 1px solid var(--panel-line);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+  }
+  .option:hover { border-color: rgba(212,175,55,0.45); }
+  .option:has(input:checked) {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.08);
+  }
+  .option input {
+    accent-color: var(--gold);
+    margin: 5px 0 0;
+    flex: none;
+  }
+  .level-input { margin: 10px 0 0; }
+  .divider {
+    border: 0;
+    border-top: 1px solid rgba(212,175,55,0.15);
+    margin: 4px 0 30px;
+  }
+  .error {
+    color: var(--danger);
+    font-size: 0.95rem;
+    margin: 0 0 16px;
+    min-height: 1.2em;
+  }
+  .status { color: var(--ink-dim); font-size: 0.9rem; margin: -4px 0 12px; }
+  button {
+    font-family: var(--utility);
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--void);
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+    border: 0;
+    border-radius: 2px;
+    padding: 14px 30px;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  button:hover:not(:disabled), button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212,175,55,0.25);
+  }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .result { text-align: center; }
+  .result h2 {
+    font-family: var(--display);
+    color: var(--gold-bright);
+    margin: 0 0 10px;
+  }
+  .result p { color: var(--ink-dim); margin: 0 0 24px; }
+  [hidden] { display: none !important; }
+  :focus-visible {
+    outline: 2px solid var(--gold-bright);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<header>
+  <a class="brand" href="index.html">
+    <img src="crest.png" alt="cCc Family crest" />
+    <span class="brand-word">cCc Family</span>
+  </a>
+  <a class="back-link" href="index.html">← Home</a>
+</header>
+<main>
+  <p class="eyebrow">Seasonal Kingdom</p>
+  <h1 id="pageTitle">SK Sign-up</h1>
+  <p class="intro">Joining us for the next seasonal kingdom? Tell us who you are and what you're aiming for, so we can plan the SK clans together. Filled it in before? Sending it again updates your answers.</p>
+
+  <form id="signupForm" novalidate>
+    <fieldset>
+      <label class="label" for="clan">Your clan</label>
+      <select id="clan" name="clan" required>
+        <option value="">Choose your clan…</option>
+      </select>
+      <label class="label" for="member">Your member name</label>
+      <select id="member" name="member" required disabled>
+        <option value="">Choose your clan first</option>
+      </select>
+      <p class="status" id="memberStatus" hidden></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Do you want to take part in the next SK?</legend>
+      <div class="options two">
+        <label class="option"><input type="radio" name="participate" value="yes" required>Yes, count me in</label>
+        <label class="option"><input type="radio" name="participate" value="no">No, not this time</label>
+      </div>
+    </fieldset>
+
+    <div id="participantQuestions" hidden>
+      <hr class="divider" />
+      <fieldset>
+        <legend>Which clan do you want to belong to?</legend>
+        <div class="options two">
+          <label class="option"><input type="radio" name="skClan" value="main">cCc 276 SK7 Main</label>
+          <label class="option"><input type="radio" name="skClan" value="academy">Academy clan</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>What do you aim to accomplish?</legend>
+        <p class="hint">Pick everything that applies.</p>
+        <div class="options">
+          <label class="option"><input type="checkbox" name="goals" value="golden_cyanide">Golden cyanide stones</label>
+          <label class="option"><input type="checkbox" name="goals" value="sk_title">SK title</label>
+          <label class="option"><input type="checkbox" name="goals" value="fragments">Just fragments for my main account</label>
+          <label class="option"><input type="checkbox" name="goals" value="new_main_t9">Creation of a new main account (T9)</label>
+          <label class="option"><input type="checkbox" name="goals" value="new_main_other">Creation of a new main account, but not necessarily T9</label>
+        </div>
+        <div id="levelWrap" hidden>
+          <label class="label level-input" for="targetLevel">Which level do you want to reach?</label>
+          <input type="text" id="targetLevel" name="targetLevel" maxlength="100" placeholder="e.g. G7 / T7" />
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Have you played an SK before?</legend>
+        <div class="options two">
+          <label class="option"><input type="radio" name="playedBefore" value="yes">Yes</label>
+          <label class="option"><input type="radio" name="playedBefore" value="no">No, this is my first</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>What is your budget to spend?</legend>
+        <div class="options">
+          <label class="option"><input type="radio" name="budget" value="not_much">Not much</label>
+          <label class="option"><input type="radio" name="budget" value="gold_pass">Only Gold Pass</label>
+          <label class="option"><input type="radio" name="budget" value="gold_forest">Only Gold Pass and Forest Pass</label>
+          <label class="option"><input type="radio" name="budget" value="all_passes">All the passes (Forest, Gold Pass, Elite Pass, …)</label>
+          <label class="option"><input type="radio" name="budget" value="passes_hercules">All the passes and Hercules</label>
+          <label class="option"><input type="radio" name="budget" value="whatever_it_takes">All the passes, Hercules and whatever else it takes</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>When do you plan to start playing SK?</legend>
+        <div class="options">
+          <label class="option"><input type="radio" name="startWhen" value="minute_it_starts">The minute it starts</label>
+          <label class="option"><input type="radio" name="startWhen" value="day_it_starts">The day it starts</label>
+          <label class="option"><input type="radio" name="startWhen" value="few_days_later">After a few days</label>
+          <label class="option"><input type="radio" name="startWhen" value="later_in_season">Later in the season</label>
+        </div>
+      </fieldset>
+    </div>
+
+    <p class="error" id="formError" role="alert"></p>
+    <button type="submit" id="submitBtn">Send my sign-up</button>
+  </form>
+
+  <div class="result" id="closed" hidden>
+    <h2>Sign-ups are closed</h2>
+    <p id="closedText">The seasonal kingdom has started. Questions? Ask your clan's leaders in game.</p>
+  </div>
+
+  <div class="result" id="result" hidden>
+    <h2 id="resultTitle">Thank you!</h2>
+    <p id="resultText"></p>
+    <button type="button" id="againBtn">Sign up someone else</button>
+  </div>
+</main>
+<script>
+  // Sign-ups are saved by ccc-hq.com's own sign-up Worker (signup-worker/ in this repo).
+  // Each clan's member list comes from that clan's own Worker.
+  const SIGNUP_WORKER = 'https://hq-db.ccc-hq.com';
+  const CLANS = [
+    { name: 'cCc Champions', worker: 'https://champions-db.ccc-hq.com/' },
+    { name: 'cCc Anatolia', worker: 'https://anatolia-db.ccc-hq.com/' },
+    { name: 'cCc Legends', worker: 'https://legends-db.ccc-hq.com/' },
+    { name: 'cCc Masters Of Battle', worker: 'https://masters-db.ccc-hq.com/' },
+  ];
+
+  const form = document.getElementById('signupForm');
+  const clanSelect = document.getElementById('clan');
+  const memberSelect = document.getElementById('member');
+  const memberStatus = document.getElementById('memberStatus');
+  const participantQuestions = document.getElementById('participantQuestions');
+  const levelWrap = document.getElementById('levelWrap');
+  const formError = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+  const memberCache = {};
+  let memberRequest = 0;
+
+  CLANS.forEach(c => clanSelect.add(new Option(c.name, c.name)));
+
+  // Once the SK has started the Worker reports sign-ups as closed (SIGNUPS_OPEN).
+  fetch(SIGNUP_WORKER + '/status')
+    .then(res => res.json())
+    .then(status => {
+      if (status && status.season) document.getElementById('pageTitle').textContent = status.season + ' Sign-up';
+      if (status && status.open === false) {
+        form.hidden = true;
+        document.getElementById('closed').hidden = false;
+      }
+    })
+    .catch(() => {});
+
+  function setMemberOptions(placeholder, names) {
+    memberSelect.innerHTML = '';
+    memberSelect.add(new Option(placeholder, ''));
+    (names || []).forEach(n => memberSelect.add(new Option(n, n)));
+    memberSelect.disabled = !names || !names.length;
+  }
+
+  async function loadMembers(clan) {
+    if (memberCache[clan.name]) return memberCache[clan.name];
+    const res = await fetch(clan.worker, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'getAllMembers' }),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const body = await res.json();
+    const list = Array.isArray(body) ? body : (body && body.data) || [];
+    const names = [...new Set(list.map(m => String((m && m.name) || '').trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+    memberCache[clan.name] = names;
+    return names;
+  }
+
+  clanSelect.addEventListener('change', async () => {
+    const clan = CLANS.find(c => c.name === clanSelect.value);
+    memberStatus.hidden = true;
+    if (!clan) { setMemberOptions('Choose your clan first'); return; }
+    const request = ++memberRequest;
+    setMemberOptions('Loading members…');
+    try {
+      const names = await loadMembers(clan);
+      if (request !== memberRequest) return;
+      setMemberOptions(names.length ? 'Choose your name…' : 'No members found', names);
+    } catch (e) {
+      if (request !== memberRequest) return;
+      setMemberOptions('Could not load the member list');
+      memberStatus.textContent = 'The member list could not be loaded. Please try again in a moment.';
+      memberStatus.hidden = false;
+    }
+  });
+
+  function checked(name) {
+    const el = form.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+  }
+  function checkedGoals() {
+    return [...form.querySelectorAll('input[name="goals"]:checked')].map(el => el.value);
+  }
+
+  form.addEventListener('change', (e) => {
+    if (e.target.name === 'participate') participantQuestions.hidden = checked('participate') !== 'yes';
+    if (e.target.name === 'goals') {
+      // A new T9 main and a new main at another level exclude each other.
+      if (e.target.checked && e.target.value === 'new_main_t9') form.querySelector('input[value="new_main_other"]').checked = false;
+      if (e.target.checked && e.target.value === 'new_main_other') form.querySelector('input[value="new_main_t9"]').checked = false;
+      levelWrap.hidden = !checkedGoals().includes('new_main_other');
+    }
+    formError.textContent = '';
+  });
+
+  function collect() {
+    const data = { clan: clanSelect.value, memberName: memberSelect.value, participate: checked('participate') };
+    if (!data.clan) return 'Please choose your clan.';
+    if (!data.memberName) return 'Please choose your member name.';
+    if (!data.participate) return 'Please tell us whether you want to take part.';
+    if (data.participate === 'yes') {
+      data.skClan = checked('skClan');
+      data.goals = checkedGoals();
+      data.targetLevel = document.getElementById('targetLevel').value.trim();
+      data.playedBefore = checked('playedBefore');
+      data.budget = checked('budget');
+      data.startWhen = checked('startWhen');
+      if (!data.skClan) return 'Please choose the clan you want to belong to.';
+      if (!data.goals.length) return 'Please choose at least one goal.';
+      if (data.goals.includes('new_main_other') && !data.targetLevel) return 'Please tell us which level you want to reach with the new main account.';
+      if (!data.playedBefore) return 'Please tell us whether you have played an SK before.';
+      if (!data.budget) return 'Please choose your budget.';
+      if (!data.startWhen) return 'Please tell us when you plan to start.';
+    }
+    return data;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = collect();
+    if (typeof data === 'string') { formError.textContent = data; return; }
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+    formError.textContent = '';
+    try {
+      const res = await fetch(SIGNUP_WORKER + '/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.success) throw new Error(body.error || 'The sign-up could not be saved (HTTP ' + res.status + ').');
+      const name = body.signup ? body.signup.memberName : data.memberName;
+      document.getElementById('resultTitle').textContent = data.participate === 'yes' ? 'See you in the SK!' : 'Thanks for letting us know';
+      document.getElementById('resultText').textContent = (body.updated ? 'Your earlier answers have been updated, ' : 'Your answers have been saved, ') + name + '.';
+      form.hidden = true;
+      document.getElementById('result').hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      formError.textContent = err.message || 'Something went wrong. Please try again.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send my sign-up';
+    }
+  });
+
+  document.getElementById('againBtn').addEventListener('click', () => {
+    form.reset();
+    setMemberOptions('Choose your clan first');
+    participantQuestions.hidden = true;
+    levelWrap.hidden = true;
+    form.hidden = false;
+    document.getElementById('result').hidden = true;
+  });
+</script>
+</body>
+</html>
