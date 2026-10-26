@@ -252,7 +252,7 @@
       </div>
       <div>
         <label class="field" for="fWants">Wants</label>
-        <select id="fWants"><option value="">All</option><option value="main">SK7 Main</option><option value="academy">Academy</option></select>
+        <select id="fWants"><option value="">All</option><option value="main">Main</option><option value="academy">Academy</option></select>
       </div>
       <div>
         <label class="field" for="fStatus">Status</label>
@@ -260,7 +260,7 @@
       </div>
       <div>
         <label class="field" for="fAssigned">Assigned</label>
-        <select id="fAssigned"><option value="">All</option><option value="main">SK7 Main</option><option value="academy">Academy</option><option value="none">Not assigned</option></select>
+        <select id="fAssigned"><option value="">All</option><option value="main">Main</option><option value="academy">Academy</option><option value="none">Not assigned</option></select>
       </div>
       <button class="btn ghost" type="button" id="refreshBtn">Refresh</button>
       <button class="btn ghost" type="button" id="csvBtn">Export CSV</button>
@@ -331,11 +331,11 @@
 
     <div class="lists">
       <section class="card">
-        <div class="list-head"><h2 id="mainTitle">cCc 276 SK7 Main</h2><button class="btn ghost" type="button" data-copy="main">Copy names</button></div>
+        <div class="list-head"><h2 id="mainTitle">Main</h2><button class="btn ghost" type="button" data-copy="main">Copy names</button></div>
         <ol id="listMain"></ol>
       </section>
       <section class="card">
-        <div class="list-head"><h2 id="academyTitle">Academy clan</h2><button class="btn ghost" type="button" data-copy="academy">Copy names</button></div>
+        <div class="list-head"><h2 id="academyTitle">Academy</h2><button class="btn ghost" type="button" data-copy="academy">Copy names</button></div>
         <ol id="listAcademy"></ol>
       </section>
     </div>
@@ -520,7 +520,7 @@
     status.value = s.codes.status;
     const clan = el('select', { 'aria-label': 'SK clan for ' + s.memberName },
       el('option', { value: '', text: '— SK clan —' }),
-      ...Object.entries(SK_CLANS).map(([v, label]) => el('option', { value: v, text: v === 'main' ? 'SK7 Main' : 'Academy' })));
+      ...Object.entries(SK_CLANS).map(([v, label]) => el('option', { value: v, text: v === 'main' ? 'Main' : 'Academy' })));
     clan.value = s.codes.assignedClan;
     clan.disabled = s.codes.status !== 'accepted';
     const comment = el('textarea', { rows: '1', placeholder: 'Comment…', 'aria-label': 'Comment for ' + s.memberName });
@@ -587,7 +587,7 @@
         s.changedSinceReview ? el('div', {}, el('span', { class: 'badge info', title: 'The member sent the form again after the last review', text: 'Changed since review' })) : null),
       el('td', { class: 'nowrap', text: s.clan }),
       el('td', {}, s.participate ? 'Yes' : el('span', { class: 'badge no', text: 'No' })),
-      el('td', { class: 'nowrap', text: s.codes.skClan === 'main' ? 'SK7 Main' : s.codes.skClan === 'academy' ? 'Academy' : '' }),
+      el('td', { class: 'nowrap', text: s.codes.skClan === 'main' ? 'Main' : s.codes.skClan === 'academy' ? 'Academy' : '' }),
       el('td', {}, s.goals.length ? el('ul', { class: 'goals' }, ...s.goals.map(g => el('li', { text: g + (/other level/.test(g) && s.targetLevel ? ': ' + s.targetLevel : '') }))) : ''),
       el('td', { text: s.playedBefore }),
       el('td', { text: s.budget }),
