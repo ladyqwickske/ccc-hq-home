@@ -1,0 +1,3 @@
+# GitHub Pages: the sign-up Worker's code is deployed to Cloudflare, not served on ccc-hq.com.
+exclude:
+  - signup-worker

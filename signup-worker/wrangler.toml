@@ -1,0 +1,30 @@
+#:schema node_modules/wrangler/config-schema.json
+# ccc-hq.com — seasonal kingdom sign-ups (the form at ccc-hq.com/signup.html).
+# Its own Worker and database, apart from the clans' database Workers: it only
+# reads the clans' member lists (public) to check who is signing up.
+name = "ccc-hq-signups"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+routes = [
+  { pattern = "hq-db.ccc-hq.com", custom_domain = true }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ccc-hq-signups"
+database_id = "5e13cfd0-8921-4448-add2-0875f8a6eafa"
+migrations_dir = "migrations"
+
+[vars]
+# The seasonal kingdom these sign-ups are for. Change it (and deploy) to start a
+# fresh round of sign-ups; earlier rounds stay in the database.
+SIGNUP_SEASON = "SK7"
+# "false" (and deploy) once the SK has started: the form then shows it is closed.
+SIGNUPS_OPEN = "true"
+# The clans members sign up from, and the Worker holding each clan's member list.
+CLANS = '{"cCc Champions": "https://champions-db.ccc-hq.com", "cCc Anatolia": "https://anatolia-db.ccc-hq.com", "cCc Legends": "https://legends-db.ccc-hq.com", "cCc Masters Of Battle": "https://masters-db.ccc-hq.com"}'
+
+# Secret, not stored here (reading the sign-ups: GET /admin/signups):
+#   npx wrangler secret put ADMIN_KEY      (any long random string)
+# Local development reads it from .dev.vars instead.
