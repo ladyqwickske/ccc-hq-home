@@ -13,7 +13,7 @@ routes = [
 [[d1_databases]]
 binding = "DB"
 database_name = "ccc-hq-signups"
-database_id = "FILL-IN: npx wrangler d1 create ccc-hq-signups"
+database_id = "5e13cfd0-8921-4448-add2-0875f8a6eafa"
 migrations_dir = "migrations"
 
 [vars]
