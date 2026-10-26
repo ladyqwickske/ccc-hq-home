@@ -38,6 +38,13 @@ try {
   const status = await (await fetch(base + '/status')).json();
   check('status says open, with the season', status.open === true && status.season === 'SK7', JSON.stringify(status));
 
+  let m = await (await fetch(base + '/members?clan=' + encodeURIComponent('cCc Legends'))).json();
+  check('the form gets a clan\'s member names, sorted', m.success && m.members.join(',') === 'Andalusy,ANGEL', JSON.stringify(m));
+  let mres = await fetch(base + '/members?clan=Nope');
+  check('an unknown clan has no member list', mres.status === 400);
+  mres = await fetch(base + '/members?clan=' + encodeURIComponent('cCc Champions'));
+  check('an unreachable member list is reported', mres.status === 502 && /could not be loaded/.test((await mres.json()).error));
+
   let r = await post(full);
   check('a full sign-up is saved', r.status === 200 && r.body.success && !r.body.updated, JSON.stringify(r.body));
   check('the answer is readable by the site (CORS)', r.cors === '*');

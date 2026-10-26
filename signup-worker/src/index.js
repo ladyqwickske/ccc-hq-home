@@ -2,6 +2,10 @@
 //
 //   GET  /health            liveness check
 //   GET  /status            { open, season } — the form shows whether sign-ups are open
+//   GET  /members?clan=…    the member names of one clan, for the form's name list. Fetched
+//                           here from the clan's Worker, so the visitor's browser never calls
+//                           the clan Workers itself (Cloudflare's managed WordPress rule blocked
+//                           some browsers' POSTs to them as an attack).
 //   POST /signup            the form (public, CORS open): checks every answer and that the
 //                           member is on their clan's member list, then saves it. Signing up
 //                           again (same season, clan and member) updates the row.
@@ -100,11 +104,8 @@ function yesNo(value, label) {
   throw new HttpError(400, `Please answer: ${label}`);
 }
 
-/**
- * The member's name as on their clan's member list, or null when the list
- * doesn't have it. Throws when the list can't be read.
- */
-async function findMember(workerUrl, name) {
+/** A clan's member names, from its Worker. Throws when the list can't be read. */
+async function memberNames(workerUrl) {
   const res = await fetch(String(workerUrl).replace(/\/+$/, '') + '/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -114,9 +115,16 @@ async function findMember(workerUrl, name) {
   const body = await res.json();
   const list = Array.isArray(body) ? body : (body && Array.isArray(body.data) ? body.data : null);
   if (!list) throw new Error('member list has an unexpected shape');
+  return [...new Set(list.map(m => String((m && m.name) || '').trim()).filter(Boolean))];
+}
+
+/**
+ * The member's name as on their clan's member list, or null when the list
+ * doesn't have it. Throws when the list can't be read.
+ */
+async function findMember(workerUrl, name) {
   const wanted = name.toLowerCase();
-  const hit = list.find(m => m && String(m.name || '').trim().toLowerCase() === wanted);
-  return hit ? String(hit.name).trim() : null;
+  return (await memberNames(workerUrl)).find(n => n.toLowerCase() === wanted) || null;
 }
 
 /** Check a submitted form and save it. */
@@ -269,6 +277,19 @@ export default {
           return json(200, { ok: true });
         case 'GET /status':
           return json(200, { success: true, open: isOpen(env), season: season(env) });
+        case 'GET /members': {
+          const clan = url.searchParams.get('clan') || '';
+          const clanWorkers = clans(env);
+          if (!Object.prototype.hasOwnProperty.call(clanWorkers, clan)) throw new HttpError(400, 'Unknown clan');
+          let names;
+          try {
+            names = await memberNames(clanWorkers[clan]);
+          } catch (e) {
+            throw new HttpError(502, `The ${clan} member list could not be loaded (${e.message}).`);
+          }
+          names.sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' }));
+          return json(200, { success: true, clan, members: names });
+        }
         case 'POST /signup': {
           let body;
           try {

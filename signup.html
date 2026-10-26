@@ -344,14 +344,14 @@
   </div>
 </main>
 <script>
-  // Sign-ups are saved by ccc-hq.com's own sign-up Worker (signup-worker/ in this repo).
-  // Each clan's member list comes from that clan's own Worker.
+  // Sign-ups are saved by ccc-hq.com's own sign-up Worker (signup-worker/ in this repo),
+  // which also hands the form each clan's member list. These names must match its CLANS setting.
   const SIGNUP_WORKER = 'https://sk-signup.ccc-hq.com';
   const CLANS = [
-    { name: 'cCc Champions', worker: 'https://champions-db.ccc-hq.com/' },
-    { name: 'cCc Anatolia', worker: 'https://anatolia-db.ccc-hq.com/' },
-    { name: 'cCc Legends', worker: 'https://legends-db.ccc-hq.com/' },
-    { name: 'cCc Masters Of Battle', worker: 'https://masters-db.ccc-hq.com/' },
+    { name: 'cCc Champions' },
+    { name: 'cCc Anatolia' },
+    { name: 'cCc Legends' },
+    { name: 'cCc Masters Of Battle' },
   ];
 
   const form = document.getElementById('signupForm');
@@ -386,17 +386,14 @@
     memberSelect.disabled = !names || !names.length;
   }
 
+  // The sign-up Worker passes the clan's member list on (GET /members): browsers asking
+  // the clan Workers directly were blocked by Cloudflare's managed WordPress rule.
   async function loadMembers(clan) {
     if (memberCache[clan.name]) return memberCache[clan.name];
-    const res = await fetch(clan.worker, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'getAllMembers' }),
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const body = await res.json();
-    const list = Array.isArray(body) ? body : (body && body.data) || [];
-    const names = [...new Set(list.map(m => String((m && m.name) || '').trim()).filter(Boolean))]
+    const res = await fetch(SIGNUP_WORKER + '/members?clan=' + encodeURIComponent(clan.name));
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.success) throw new Error(body.error || 'HTTP ' + res.status);
+    const names = [...new Set((body.members || []).map(n => String(n).trim()).filter(Boolean))]
       .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
     memberCache[clan.name] = names;
     return names;
