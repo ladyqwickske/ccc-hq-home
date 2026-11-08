@@ -30,7 +30,10 @@ Check it: `https://sk-signup.ccc-hq.com/status` should show `{"success":true,"op
 
 The review page (not linked from the site) asks for the `ADMIN_KEY`. On it you can:
 
-- sort by any column and filter by status, SK clan, and whether members take part
+- sort by any column and filter by status, SK clan, budget, goals and more. Each
+  filter is a list of tick boxes: tick several to see members matching any of them
+  (e.g. "All the passes", "Passes + Hercules" and "Whatever it takes"; on Budget and
+  Starts, tick one and click *And up* to tick everything after it)
 - set each sign-up's status (Pending / Accepted / Declined), pick the SK clan for
   accepted members, and add a comment; changes save straight away
 - see the accepted lists per SK clan (with a "Copy names" button), and export the
